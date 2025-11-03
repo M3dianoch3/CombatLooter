@@ -2,6 +2,7 @@
 using CombatLooter.Classes.Implementation.V0.Player;
 using CombatLooter.Enum;
 using CombatLooter.Services.Interface;
+using CombatLooter.Services.Models;
 
 namespace CombatLooter.Services.Implementation
 {
@@ -12,7 +13,7 @@ namespace CombatLooter.Services.Implementation
         private readonly Random _rng = new();
         private const double attackSpeedWithNoWeapon = 1.0;
 
-        private List<> _turnsDetails = new();
+        private List<TurnDetails> _turnsDetails = new();
 
         /// <summary>
         /// 
@@ -48,13 +49,16 @@ namespace CombatLooter.Services.Implementation
         {
             logger?.Invoke("Combat started.");
 
+            // Turn count
+            var turnNumber = 1;
+            
             // Defensive copy of active enemies
             _enemies = _enemies.Where(e => e.GetCurrentHealth() > 0).ToList();
 
             // Helper to test alive
             static bool IsAlive(BaseBeing b) => b.GetCurrentHealth() > 0;
 
-            // Helper to pick player's target: enemy with lowest health, random tie-break
+            // Helper to pick player's target: enemy with the lowest health, random tie-break
             BaseBeing? PickPlayerTarget()
             {
                 var alive = _enemies.Where(IsAlive).ToList();
@@ -81,6 +85,9 @@ namespace CombatLooter.Services.Implementation
                 .ThenBy(_ => Guid.NewGuid()) // randomize equal dex
                 .ToList();
 
+            // Turn's details
+            var actionTurnDetails = new TurnDetails();
+            
             foreach (var attacker in participants)
             {
                 if (!IsAlive(attacker)) continue;
@@ -104,8 +111,12 @@ namespace CombatLooter.Services.Implementation
                     // remove dead enemy from active list
                     _enemies.Remove(target);
                 }
+                actionTurnDetails.AddNewAction(turnNumber, attacker.GetName(), "Attack", damage, target.GetName(), dead ? "Dead":"Alive");
             }
 
+            // Adding all action logs to _turnsDetails
+            _turnsDetails.Add(actionTurnDetails);
+            
             // If combat finished after first round
             if (!_enemies.Any(IsAlive))
             {
@@ -138,6 +149,7 @@ namespace CombatLooter.Services.Implementation
 
             while (IsAlive(_player) && _enemies.Any(IsAlive))
             {
+                turnNumber++;
                 if (actions++ > maxActions)
                 {
                     logger?.Invoke("Max action limit reached, aborting combat.");
@@ -177,17 +189,49 @@ namespace CombatLooter.Services.Implementation
                     _enemies.Remove(target);
                 }
 
+                actionTurnDetails.AddNewAction(turnNumber, attacker.GetName(), "Attack", damage, target.GetName(), dead ? "Dead":"Alive");
+                
                 // Re-enqueue attacker with its next scheduled time
                 double attackSpeed = GetAttackSpeed(attacker);
                 double nextScheduled = nextTime + attackSpeed;
                 pq.Enqueue(attacker, nextScheduled);
             }
 
+            _turnsDetails.Add(actionTurnDetails);
+            
             var playerAlive = IsAlive(_player);
             logger?.Invoke(playerAlive ? "Combat ended: player survived." : "Combat ended: player died.");
             return playerAlive;
         }
 
+        
+        public bool RunCombat_V2(Action<string>? logger = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
+        #region Helpers
+
+        private enum OrderMethod
+        {
+            Dexterity,
+            Strength,
+            Intelligence,
+            Stamina,
+            WeaponSpeed
+        }
+        
+        private BaseBeing PickPlayerTarget()
+        {
+            throw new NotImplementedException();
+        }
+
+        private List<BaseBeing> OrderEntities(List<BaseBeing> entities, OrderMethod method)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
