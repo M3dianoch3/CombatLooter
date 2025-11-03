@@ -1,5 +1,8 @@
 ﻿namespace CombatLooter.Services.Models
 {
+    /// <summary>
+    /// Class representing the details of a turn in combat.
+    /// </summary>
     public class TurnDetails
     {
         public int TurnId { get; set; }
