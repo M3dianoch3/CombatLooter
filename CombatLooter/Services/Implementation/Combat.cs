@@ -3,6 +3,7 @@ using CombatLooter.Classes.Implementation.V0.Player;
 using CombatLooter.Enum;
 using CombatLooter.Services.Interface;
 using CombatLooter.Services.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CombatLooter.Services.Implementation
 {
@@ -13,16 +14,19 @@ namespace CombatLooter.Services.Implementation
         private readonly Random _rng = new();
         private const double attackSpeedWithNoWeapon = 1.0;
 
+        private readonly ILogger _logger;
+
         private List<TurnDetails> _turnsDetails = new();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public Combat(Player player)
+        public Combat(Player player, ILogger logger)
         {
             _player = player;
             _enemies = new List<BaseBeing>();
+            _logger = logger;
         }
 
         /// <summary>
@@ -30,10 +34,11 @@ namespace CombatLooter.Services.Implementation
         /// </summary>
         /// <param name="player"></param>
         /// <param name="enemies"></param>
-        public Combat(Player player, List<BaseBeing> enemies)
+        public Combat(Player player, List<BaseBeing> enemies, ILogger logger)
         {
             _player = player;
             _enemies = enemies;
+            _logger = logger;
         }
 
         #region Combat Logic
@@ -204,7 +209,12 @@ namespace CombatLooter.Services.Implementation
             return playerAlive;
         }
 
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public bool RunCombat_V2(Action<string>? logger = null)
         {
             throw new NotImplementedException();
@@ -222,15 +232,26 @@ namespace CombatLooter.Services.Implementation
             Stamina,
             WeaponSpeed
         }
-        
-        private BaseBeing PickPlayerTarget()
+
+        // Helper to test alive
+        static bool IsAlive(BaseBeing b) => b.GetCurrentHealth() > 0;
+
+        private BaseBeing? PickPlayerTarget()
         {
-            throw new NotImplementedException();
+            var alive = _enemies.Where(IsAlive).ToList();
+            if (!alive.Any()) return null;
+            var minHp = alive.Min(e => e.GetCurrentHealth());
+            var candidates = alive.Where(e => Math.Abs(e.GetCurrentHealth() - minHp) < 0.0001).ToList();
+            return candidates.Count == 1 ? candidates[0] : candidates[_rng.Next(candidates.Count)];
         }
 
         private List<BaseBeing> OrderEntities(List<BaseBeing> entities, OrderMethod method)
         {
-            throw new NotImplementedException();
+            switch (method)
+            {
+                case OrderMethod.Dexterity: throw new NotImplementedException();
+                default: throw new NotImplementedException();
+            }
         }
         #endregion
     }

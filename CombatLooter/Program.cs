@@ -1,30 +1,47 @@
-﻿class Program
+﻿using CombatLooter.Services.Interface;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+
+class Program
 {
     static void Main(string[] args)
     {
-        // Check if the user provided a file path as an argument
-        if (args.Length == 0)
-        {
-            Console.WriteLine("Please provide the path to the CombatLooter configuration file.");
-            return;
-        }
-        string configFilePath = args[0];
-        // Load and process the configuration file
-        try
-        {
-            var config = LoadConfiguration(configFilePath);
-            Console.WriteLine("Configuration loaded successfully.");
-            // Further processing can be done here
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading configuration: {ex.Message}");
-        }
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {NewLine}{Exception}")
+            .WriteTo.File("logs/combatlooter.log", rollingInterval: RollingInterval.Day,
+                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .Enrich.FromLogContext()
+            .CreateLogger();
     }
-    static dynamic LoadConfiguration(string path)
+
+    public class Application
     {
-        // Simulate loading a configuration file
-        // In a real application, you would read from the file and parse it
-        return new { Path = path, Loaded = true };
+        private readonly ILogger<Application> _logger;
+        private readonly IServiceProvider _serviceProvider;
+
+        public Application(ILogger<Application> logger, IServiceProvider serviceProvider)
+        {
+            _logger = logger;
+            _serviceProvider = serviceProvider;
+        }
+
+        public void Run(string[] args)
+        {
+            _logger.LogInformation("Combat Looter started!");
+
+            try
+            {
+                // Create a run
+                // Run is an infinite loop of combats until player dies
+                // After each combat, the player can select an item to equip
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unhandled exception occurred.");
+            }
+        }
     }
 }
