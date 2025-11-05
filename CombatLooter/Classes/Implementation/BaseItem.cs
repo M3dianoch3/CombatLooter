@@ -7,6 +7,8 @@ namespace CombatLooter.Classes.Implementation
         private readonly Guid _itemId;
         private int _iLevel;
         private string _name;
+        // private Rarity _rarity; // Future implementation for item rarity
+        // private int durability; // Future implementation for item durability
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseItem"/> class with a unique identifier and a default item

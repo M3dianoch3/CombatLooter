@@ -74,6 +74,132 @@ namespace CombatLooter.Classes.Implementation
             this._class = beingClass;
         }
 
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the current health of the being.
+        /// </summary>
+        public double CurrentHealth
+        {
+            get => _currentHealth;
+            set => _currentHealth = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the current mana of the being.
+        /// </summary>
+        public double CurrentMana
+        {
+            get => _currentMana;
+            set => _currentMana = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum health of the being.
+        /// </summary>
+        public double MaxHealth
+        {
+            get => _maxHealth;
+            set => _maxHealth = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum mana of the being.
+        /// </summary>
+        public double MaxMana
+        {
+            get => _maxMana;
+            set => _maxMana = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the being.
+        /// </summary>
+        public string Name
+        {
+            get => _name;
+            set => _name = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the armor value of the being.
+        /// </summary>
+        public double Armor
+        {
+            get => _armor;
+            set => _armor = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the stamina value of the being.
+        /// </summary>
+        public int Stamina
+        {
+            get => _stamina;
+            set => _stamina = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the strength value of the being.
+        /// </summary>
+        public int Strength
+        {
+            get => _strength;
+            set => _strength = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the intelligence value of the being.
+        /// </summary>
+        public int Intelligence
+        {
+            get => _intelligence;
+            set => _intelligence = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the dexterity value of the being.
+        /// </summary>
+        public int Dexterity
+        {
+            get => _dexterity;
+            set => _dexterity = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the resistances dictionary of the being.
+        /// </summary>
+        public Dictionary<DamageModifiers, double> Resistances
+        {
+            get => _resistances;
+            set => _resistances = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the currently equipped weapon.
+        /// </summary>
+        public BaseWeapon? EquippedWeapon
+        {
+            get => _equippedWeapon;
+            set => _equippedWeapon = value;
+        }
+
+        /// <summary>
+        /// Gets the current level of the being.
+        /// </summary>
+        public int Level => _level;
+
+        /// <summary>
+        /// Gets or sets the class of the being.
+        /// </summary>
+        public BeingClass Class
+        {
+            get => _class;
+            set => _class = value;
+        }
+
+        #endregion
+
         #region Update methods
         /// <summary>
         /// Changes the health value of the being by the specified amount
@@ -126,311 +252,134 @@ namespace CombatLooter.Classes.Implementation
         }
 
         /// <summary>
-        /// Method to change max health value
+        /// Changes the max health value by the specified amount
         /// </summary>
-        /// <param name="amount">Amount to change health by</param>
-        public void ChangeMaxHealth(double amount)
-        {
-            this._maxHealth += amount;
-        }
+        /// <param name="amount">Amount to change max health by</param>
+        public void ChangeMaxHealth(double amount) => _maxHealth += amount;
 
         /// <summary>
-        /// Method to change max mana value
+        /// Changes the max mana value by the specified amount
         /// </summary>
-        /// <param name="amount"></param>
-        public void ChangeMaxMana(double amount)
-        {
-            this._maxMana += amount;
-        }
+        /// <param name="amount">Amount to change max mana by</param>
+        public void ChangeMaxMana(double amount) => _maxMana += amount;
 
         /// <summary>
         /// Changes the name of the being
         /// </summary>
         /// <param name="newName">The new name to assign to the being</param>
-        public void ChangeName(string newName)
-        {
-            this._name = newName;
-        }
+        public void ChangeName(string newName) => _name = newName;
 
         /// <summary>
         /// Changes the armor value of the being by the specified amount
         /// </summary>
         /// <param name="amount">Amount of armor to change (positive to increase, negative to decrease)</param>
-        public void ChangeArmor(int amount)
-        {
-            this._armor += amount;
-        }
+        public void ChangeArmor(double amount) => _armor += amount;
 
         /// <summary>
         /// Changes the stamina value of the being by the specified amount
         /// </summary>
         /// <param name="amount">Amount to change stamina by (positive to increase, negative to decrease)</param>
-        public void ChangeStamina(int amount)
-        {
-            this._stamina += amount;
-        }
+        public void ChangeStamina(int amount) => _stamina += amount;
 
         /// <summary>
         /// Changes the strength value of the being by the specified amount
         /// </summary>
         /// <param name="amount">Amount to change strength by (positive to increase, negative to decrease)</param>
-        public void ChangeStrength(int amount)
-        {
-            this._strength += amount;
-        }
+        public void ChangeStrength(int amount) => _strength += amount;
 
         /// <summary>
         /// Changes the intelligence value of the being by the specified amount
         /// </summary>
         /// <param name="amount">Amount to change intelligence by (positive to increase, negative to decrease)</param>
-        public void ChangeIntelligence(int amount)
-        {
-            this._intelligence += amount;
-        }
+        public void ChangeIntelligence(int amount) => _intelligence += amount;
 
         /// <summary>
         /// Changes the dexterity value of the being by the specified amount
         /// </summary>
         /// <param name="amount">Amount to change dexterity by (positive to increase, negative to decrease)</param>
-        public void ChangeDexterity(int amount)
-        {
-            this._dexterity += amount;
-        }
+        public void ChangeDexterity(int amount) => _dexterity += amount;
         #endregion
 
-        #region Setters and Getters
-        /// <summary>
-        /// Gets the current health of the being
-        /// </summary>
-        /// <returns>The health value as a double</returns>
-        public double GetCurrentHealth()
-        {
-            return this._currentHealth;
-        }
+        #region Backward Compatibility Methods (Deprecated - Use Properties Instead)
 
-        /// <summary>
-        /// Sets the health of the being to a specific value
-        /// </summary>
-        /// <param name="health">The new health value to set</param>
-        public void SetCurrentHealth(double health)
-        {
-            this._currentHealth = health;
-        }
+        [Obsolete("Use CurrentHealth property instead")]
+        public double GetCurrentHealth() => CurrentHealth;
 
-        /// <summary>
-        /// Gets the current mana of the being
-        /// </summary>
-        /// <returns>The mana value as a double</returns>
-        public double GetCurrentMana()
-        {
-            return this._currentMana;
-        }
+        [Obsolete("Use CurrentHealth property instead")]
+        public void SetCurrentHealth(double health) => CurrentHealth = health;
 
-        /// <summary>
-        /// Sets the mana of the being to a specific value
-        /// </summary>
-        /// <param name="mana">The new mana value to set</param>
-        public void SetCurrentMana(double mana)
-        {
-            this._currentMana = mana;
-        }
+        [Obsolete("Use CurrentMana property instead")]
+        public double GetCurrentMana() => CurrentMana;
 
-        // <summary>
-        /// Gets the maximum health of the being
-        /// </summary>
-        public double GetMaxHealth()
-        {
-            return this._maxHealth;
-        }
+        [Obsolete("Use CurrentMana property instead")]
+        public void SetCurrentMana(double mana) => CurrentMana = mana;
 
-        /// <summary>
-        /// Sets the maximum health of the being
-        /// </summary>
-        /// <param name="maxHealth">Amount to set</param>
-        public void SetMaxHealth(double maxHealth)
-        {
-            this._maxHealth = maxHealth;
-        }
+        [Obsolete("Use MaxHealth property instead")]
+        public double GetMaxHealth() => MaxHealth;
 
-        /// <summary>
-        /// Gets the maximum mana of the being
-        /// </summary>
-        public double GetMaxMana()
-        {
-            return this._maxMana;
-        }
+        [Obsolete("Use MaxHealth property instead")]
+        public void SetMaxHealth(double maxHealth) => MaxHealth = maxHealth;
 
-        /// <summary>
-        /// Sets the maximum mana of the being
-        /// </summary>
-        /// <param name="maxMana">Amount to set</param>
-        public void SetMaxMana(double maxMana)
-        {
-            this._maxMana = maxMana;
-        }   
+        [Obsolete("Use MaxMana property instead")]
+        public double GetMaxMana() => MaxMana;
 
-        /// <summary>
-        /// Gets the current name of the being
-        /// </summary>
-        /// <returns>The name as a string</returns>
-        public string GetName()
-        {
-            return this._name;
-        }
+        [Obsolete("Use MaxMana property instead")]
+        public void SetMaxMana(double maxMana) => MaxMana = maxMana;
 
-        /// <summary>
-        /// Sets the name of the being to a specific value
-        /// </summary>
-        /// <param name="name">The new name to set</param>
-        public void SetName(string name)
-        {
-            this._name = name;
-        }
+        [Obsolete("Use Name property instead")]
+        public string GetName() => Name;
 
-        /// <summary>
-        /// Gets the current armor value of the being
-        /// </summary>
-        /// <returns>The armor value as a double</returns>
-        public double GetArmor()
-        {
-            return this._armor;
-        }
+        [Obsolete("Use Name property instead")]
+        public void SetName(string name) => Name = name;
 
-        /// <summary>
-        /// Sets the armor of the being to a specific value
-        /// </summary>
-        /// <param name="armor">The new armor value to set</param>
-        public void SetArmor(double armor)
-        {
-            this._armor = armor;
-        }
+        [Obsolete("Use Armor property instead")]
+        public double GetArmor() => Armor;
 
-        /// <summary>
-        /// Gets the current stamina value of the being
-        /// </summary>
-        /// <returns>The stamina value as an int</returns>
-        public int GetStamina()
-        {
-            return this._stamina;
-        }
+        [Obsolete("Use Armor property instead")]
+        public void SetArmor(double armor) => Armor = armor;
 
-        /// <summary>
-        /// Sets the stamina of the being to a specific value
-        /// </summary>
-        /// <param name="stamina">The new stamina value to set</param>
-        public void SetStamina(int stamina)
-        {
-            this._stamina = stamina;
-        }
+        [Obsolete("Use Stamina property instead")]
+        public int GetStamina() => Stamina;
 
-        /// <summary>
-        /// Gets the current strength value of the being
-        /// </summary>
-        /// <returns>The strength value as an int</returns>
-        public int GetStrength()
-        {
-            return this._strength;
-        }
+        [Obsolete("Use Stamina property instead")]
+        public void SetStamina(int stamina) => Stamina = stamina;
 
-        /// <summary>
-        /// Sets the strength of the being to a specific value
-        /// </summary>
-        /// <param name="strength">The new strength value to set</param>
-        public void SetStrength(int strength)
-        {
-            this._strength = strength;
-        }
+        [Obsolete("Use Strength property instead")]
+        public int GetStrength() => Strength;
 
-        /// <summary>
-        /// Gets the current intelligence value of the being
-        /// </summary>
-        /// <returns>The intelligence value as an int</returns>
-        public int GetIntelligence()
-        {
-            return this._intelligence;
-        }
+        [Obsolete("Use Strength property instead")]
+        public void SetStrength(int strength) => Strength = strength;
 
-        /// <summary>
-        /// Sets the intelligence of the being to a specific value
-        /// </summary>
-        /// <param name="intelligence">The new intelligence value to set</param>
-        public void SetIntelligence(int intelligence)
-        {
-            this._intelligence = intelligence;
-        }
+        [Obsolete("Use Intelligence property instead")]
+        public int GetIntelligence() => Intelligence;
 
-        /// <summary>
-        /// Gets the current dexterity value of the being
-        /// </summary>
-        /// <returns>The dexterity value as an int</returns>
-        public int GetDexterity()
-        {
-            return this._dexterity;
-        }
+        [Obsolete("Use Intelligence property instead")]
+        public void SetIntelligence(int intelligence) => Intelligence = intelligence;
 
-        /// <summary>
-        /// Sets the dexterity of the being to a specific value
-        /// </summary>
-        /// <param name="dexterity">The new dexterity value to set</param>
-        public void SetDexterity(int dexterity)
-        {
-            this._dexterity = dexterity;
-        }
+        [Obsolete("Use Dexterity property instead")]
+        public int GetDexterity() => Dexterity;
 
-        /// <summary>
-        /// Gets the resistances dictionary of the being
-        /// </summary>
-        /// <returns>The resistances dictionary mapping DamageModifiers to resistance values</returns>
-        public Dictionary<DamageModifiers, double> GetResistances()
-        {
-            return this._resistances;
-        }
+        [Obsolete("Use Dexterity property instead")]
+        public void SetDexterity(int dexterity) => Dexterity = dexterity;
 
-        /// <summary>
-        /// Sets the resistances dictionary of the being
-        /// </summary>
-        /// <param name="resistances">The new resistances dictionary to set</param>
-        public void SetResistances(Dictionary<DamageModifiers, double> resistances)
-        {
-            this._resistances = resistances;
-        }
+        [Obsolete("Use Resistances property instead")]
+        public Dictionary<DamageModifiers, double> GetResistances() => Resistances;
 
-        /// <summary>
-        /// Gets the current level of the being
-        /// </summary>
-        /// <returns>The level as an <see cref="int"/></returns>
-        public int GetLevel()
-        {
-            return this._level;
-        }
+        [Obsolete("Use Resistances property instead")]
+        public void SetResistances(Dictionary<DamageModifiers, double> resistances) => Resistances = resistances;
 
-        /// <summary>
-        /// Retrieves the currently equipped weapon.
-        /// </summary>
-        /// <returns>The currently equipped weapon as a <see cref="BaseWeapon"/> instance, or <see langword="null"/> if no weapon
-        /// is equipped.</returns>
-        public BaseWeapon? GetEquippedWeapon()
-        {
-            return this._equippedWeapon;
-        }
+        [Obsolete("Use Level property instead")]
+        public int GetLevel() => Level;
 
-        /// <summary>
-        /// Sets the class of the being.
-        /// </summary>
-        /// <param name="beingClass"><see cref="BeingClass"/></param>
-        public void SetBeingClass(BeingClass beingClass)
-        {
-            this._class = beingClass;
-        }
+        [Obsolete("Use EquippedWeapon property instead")]
+        public BaseWeapon? GetEquippedWeapon() => EquippedWeapon;
 
-        /// <summary>
-        /// Gets the class of the being.
-        /// </summary>
-        /// <returns><see cref="BeingClass"/></returns>
-        public BeingClass GetBeingClass()
-        {
-            return this._class;
-        }
+        [Obsolete("Use Class property instead")]
+        public void SetBeingClass(BeingClass beingClass) => Class = beingClass;
+
+        [Obsolete("Use Class property instead")]
+        public BeingClass GetBeingClass() => Class;
+
         #endregion
 
         #region Calculation Methods
@@ -443,7 +392,7 @@ namespace CombatLooter.Classes.Implementation
         {
             if (this._equippedWeapon == null)
             {
-                return this.GetStrength();
+                return Strength;
             }
 
             double baseTotalDamage = this._equippedWeapon.GetBaseDamage();
@@ -451,9 +400,9 @@ namespace CombatLooter.Classes.Implementation
             switch (this._equippedWeapon.GetDamageType())
             {
                 case DamageTypes.Physical:
-                    return baseTotalDamage + (baseTotalDamage * this.GetStrength() / 100);
+                    return baseTotalDamage + (baseTotalDamage * Strength / 100);
                 case DamageTypes.Magical:
-                    return baseTotalDamage + (baseTotalDamage * this.GetIntelligence() / 100);
+                    return baseTotalDamage + (baseTotalDamage * Intelligence / 100);
                 default:
                     return baseTotalDamage;
             }
@@ -480,7 +429,7 @@ namespace CombatLooter.Classes.Implementation
                 }
             }
             this.ChangeCurrentHealth(-totalDamage);
-            return this.GetCurrentHealth() <= 0;
+            return CurrentHealth <= 0;
         }
 
         /// <summary>
@@ -493,7 +442,7 @@ namespace CombatLooter.Classes.Implementation
             if (amount < 0)
                 throw new ArgumentException("Heal amount cannot be negative.", nameof(amount));
 
-            if (this.GetCurrentHealth() == this.GetMaxHealth())
+            if (CurrentHealth == MaxHealth)
             {
                 return 0f;
             }

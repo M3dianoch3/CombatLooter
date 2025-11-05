@@ -23,11 +23,11 @@ namespace CombatLooter.UnitTests.Units
             var being = new TestBeing();
 
             // Assert
-            Assert.Equal("Unnamed Being", being.GetName());
-            Assert.Equal(100, being.GetCurrentHealth());
-            Assert.Equal(100, being.GetCurrentMana());
-            Assert.Empty(being.GetResistances());
-            Assert.Null(being.GetEquippedWeapon());
+            Assert.Equal("Unnamed Being", being.Name);
+            Assert.Equal(100, being.CurrentHealth);
+            Assert.Equal(100, being.CurrentMana);
+            Assert.Empty(being.Resistances);
+            Assert.Null(being.EquippedWeapon);
             Assert.Equal(10, being.GetAmountAttack());
         }
 
@@ -41,7 +41,7 @@ namespace CombatLooter.UnitTests.Units
             var isDead = being.TakeDamage(30, new Dictionary<DamageModifiers, double>());
 
             // Assert
-            Assert.Equal(70, being.GetCurrentHealth());
+            Assert.Equal(70, being.CurrentHealth);
             Assert.False(isDead);
         }
 
@@ -55,7 +55,7 @@ namespace CombatLooter.UnitTests.Units
             var isDead = being.TakeDamage(150, new Dictionary<DamageModifiers, double>());
 
             // Assert
-            Assert.Equal(0, being.GetCurrentHealth());
+            Assert.Equal(0, being.CurrentHealth);
             Assert.True(isDead);
         }
 
@@ -80,12 +80,12 @@ namespace CombatLooter.UnitTests.Units
             // Arrange
             var being = new TestBeing();
             being.TakeDamage(50, new Dictionary<DamageModifiers, double>());
-            var healthBeforeHeal = being.GetCurrentHealth();
+            var healthBeforeHeal = being.CurrentHealth;
             // Act
             var healed = being.Heal(amountToHeal);
 
             // Assert
-            Assert.Equal(healed, (being.GetCurrentHealth() - healthBeforeHeal));
+            Assert.Equal(healed, (being.CurrentHealth - healthBeforeHeal));
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace CombatLooter.UnitTests.Units
             var isDead = being.TakeDamage(baseDamage, damageModifiers);
 
             // Assert
-            Assert.Equal(expectedRemainingHealth, being.GetCurrentHealth());
+            Assert.Equal(expectedRemainingHealth, being.CurrentHealth);
             Assert.Equal(expectedIsDead, isDead);
         }
 

@@ -172,6 +172,12 @@ namespace CombatLooter.Services.Implementation
                 // Dequeue next attacker (earliest next attack time)
                 pq.TryDequeue(out var attacker, out var nextTime);
 
+                if(attacker is null)
+                {
+                    logger?.Invoke("No attacker available, aborting combat.");
+                    break;
+                }
+
                 // Skip dead attackers
                 if (!IsAlive(attacker)) continue;
 

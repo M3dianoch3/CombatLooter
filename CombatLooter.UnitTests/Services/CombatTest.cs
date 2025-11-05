@@ -4,6 +4,7 @@ using CombatLooter.Classes.Implementation.V0.Player;
 using CombatLooter.Classes.Implementation.V0.Weapon;
 using CombatLooter.Enum;
 using CombatLooter.Services.Implementation;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CombatLooter.UnitTests.Services
 {
@@ -18,7 +19,7 @@ namespace CombatLooter.UnitTests.Services
             // Arrange
             var player = TestData.CreateTestPlayer();
             var enemies = TestData.CreateTestEnemy();
-            var combat = new Combat(player, enemies);
+            var combat = new Combat(player, enemies, NullLogger<Combat>.Instance);
             // Act
             var result = combat.RunCombat();
             // Assert
@@ -31,7 +32,7 @@ namespace CombatLooter.UnitTests.Services
             // Arrange
             var player = TestData.CreateTestPlayer();
             var enemies = TestData.CreateTestMultipleEnemies();
-            var combat = new Combat(player, enemies);
+            var combat = new Combat(player, enemies, NullLogger<Combat>.Instance);
 
             // Act
             var result = combat.RunCombat();

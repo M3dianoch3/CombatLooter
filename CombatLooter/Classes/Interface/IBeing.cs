@@ -50,7 +50,7 @@ namespace CombatLooter.Classes.Interface
         /// Method to change Armor value
         /// </summary>
         /// <param name="amount">Amount of armor to change</param>
-        void ChangeArmor(int amount);
+        void ChangeArmor(double amount);
 
         /// <summary>
         /// Method to change Stamina value
