@@ -18,15 +18,18 @@ namespace CombatLooter.Services.Implementation
         public void StartNewRun()
         {
             _logger.LogInformation("Starting a new run...");
-            // Initialize player, enemies, and other game state here
+            // Initialize player
             // Loop through combats until the player dies
             bool playerAlive = true;
             while (playerAlive)
             {
                 _logger.LogInformation("Starting a new combat...");
+                // Create enemies based on Player level
                 // Here you would invoke the combat service to run a combat
                 // For example:
                 // playerAlive = _combatService.RunCombat(logger: msg => _logger.LogInformation(msg));
+                // After combat, if the player is still alive, create loot (based on enemies?) and let the player choose equipment
+                // Increase player's level in 1 (for now), 1 combat won = 1 level
                 // For now, we'll just simulate the end of combat
                 playerAlive = false; // Placeholder to exit loop
             }
@@ -41,9 +44,36 @@ namespace CombatLooter.Services.Implementation
             return new List<BaseBeing>();
         }
 
+        static List<BaseWeapon> GetWeaponsForLevel(int level)
+        {
+            return new List<BaseWeapon>();
+        }
+
         private static BaseBeing CreateEnemyRandomForLevel(int level)
         {
-            return null!;
+            int random = Random.Shared.Next(0, 7);
+
+            switch (random)
+            {
+                case 0:
+                    return new Classes.Implementation.V0.Enemy.Beast();
+                case 1:
+                    return new Classes.Implementation.V0.Enemy.Demon();
+                case 2:
+                    return new Classes.Implementation.V0.Enemy.Dragon();
+                case 3:
+                    return new Classes.Implementation.V0.Enemy.Elemental();
+                case 4:
+                    return new Classes.Implementation.V0.Enemy.Giant();
+                case 5:
+                    return new Classes.Implementation.V0.Enemy.Goblin();
+                case 6:
+                    return new Classes.Implementation.V0.Enemy.Humanoid();
+                case 7:
+                    return new Classes.Implementation.V0.Enemy.Undead();
+                default:
+                    return new Classes.Implementation.V0.Enemy.Humanoid();
+            }
         }
 
         private static BaseWeapon CreateWeaponRandomForLevel(int level)

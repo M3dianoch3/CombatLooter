@@ -46,6 +46,7 @@ namespace CombatLooter.Classes.Implementation
             this._attackSpeed = attackSpeed;
             this._damageModifiers = damageModifiers;
         }
+
         #region Setters and Getters
         /// <summary>
         /// Gets the type of the weapon.

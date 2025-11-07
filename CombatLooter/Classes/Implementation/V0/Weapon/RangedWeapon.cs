@@ -31,5 +31,15 @@ namespace CombatLooter.Classes.Implementation.V0.Weapon
         {
             _rangedWeaponType = rangedWeaponType;
         }
+
+        #region Properties
+        /// <summary>
+        /// Gets the type of the ranged weapon.
+        /// </summary>
+        public RangedWeaponTypes RangedWeaponType
+        {
+            get => _rangedWeaponType;
+        }
+        #endregion
     }
 }

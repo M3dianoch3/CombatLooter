@@ -31,5 +31,15 @@ namespace CombatLooter.Classes.Implementation.V0.Weapon
         {
             _meleeWeaponType = meleeWeaponType;
         }
+
+        #region Properties
+        /// <summary>
+        /// Gets the type of the melee weapon.
+        /// </summary>
+        public MeleeWeaponTypes MeleeWeaponType
+        {
+            get => _meleeWeaponType;
+        }
+        #endregion
     }
 }

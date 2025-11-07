@@ -1,4 +1,5 @@
-﻿using CombatLooter.Classes.Interface;
+﻿using CombatLooter.Classes.Implementation.V0.Weapon;
+using CombatLooter.Classes.Interface;
 using CombatLooter.Enum;
 
 namespace CombatLooter.Classes.Implementation
@@ -185,9 +186,13 @@ namespace CombatLooter.Classes.Implementation
         }
 
         /// <summary>
-        /// Gets the current level of the being.
+        /// Gets or sets the current level of the being.
         /// </summary>
-        public int Level => _level;
+        public int Level
+        {
+            get => _level;
+            set => _level = value;
+        }
 
         /// <summary>
         /// Gets or sets the class of the being.
@@ -400,12 +405,20 @@ namespace CombatLooter.Classes.Implementation
             switch (this._equippedWeapon.GetDamageType())
             {
                 case DamageTypes.Physical:
-                    return baseTotalDamage + (baseTotalDamage * Strength / 100);
+                    if (this._equippedWeapon is MeleeWeapon)
+                    {
+                        return baseTotalDamage + (baseTotalDamage * Strength / 100);
+                    }
+                    else if (this._equippedWeapon is RangedWeapon)
+                    {
+                        return baseTotalDamage + (baseTotalDamage * Dexterity / 100);
+                    }
+                    return baseTotalDamage;
                 case DamageTypes.Magical:
                     return baseTotalDamage + (baseTotalDamage * Intelligence / 100);
                 default:
                     return baseTotalDamage;
-            }
+                }
         }
 
         /// <summary>
