@@ -25,6 +25,7 @@ namespace CombatLooter.Enum
         Ice = 4,
         Lightning = 8,
         Poison = 16,
-        True = 32
+        True = 32,
+        Shadow = 64,
     }
 }

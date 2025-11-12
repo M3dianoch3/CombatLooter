@@ -51,7 +51,7 @@ namespace CombatLooter.Services.Implementation
 
         private static BaseBeing CreateEnemyRandomForLevel(int level)
         {
-            int random = Random.Shared.Next(0, 7);
+            int random = Random.Shared.Next(0, 8);
 
             switch (random)
             {
@@ -66,7 +66,7 @@ namespace CombatLooter.Services.Implementation
                 case 4:
                     return new Classes.Implementation.V0.Enemy.Giant();
                 case 5:
-                    return new Classes.Implementation.V0.Enemy.Goblin();
+                    return new Classes.Implementation.V0.Enemy.Goblin(level);
                 case 6:
                     return new Classes.Implementation.V0.Enemy.Humanoid();
                 case 7:
