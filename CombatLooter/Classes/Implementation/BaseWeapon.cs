@@ -130,6 +130,19 @@ namespace CombatLooter.Classes.Implementation
         }
 
         /// <summary>
+        /// Gets the DPS (Damage Per Second) of the weapon.
+        /// </summary>
+        /// <returns>DPS value. <see cref="double"/></returns>
+        public double GetDPS()
+        {
+            if (this._attackSpeed <= 0)
+            {
+                return 0;
+            }
+            return (this._baseDamage / this._attackSpeed);
+        }
+
+        /// <summary>
         /// Gets a copy of the damage modifiers dictionary.
         /// </summary>
         /// <returns>A dictionary containing all damage modifiers. <see cref="Dictionary{DamageModifiers, double}"/></returns>
