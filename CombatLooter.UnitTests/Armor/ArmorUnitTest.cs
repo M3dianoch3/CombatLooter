@@ -1,4 +1,5 @@
 ﻿using CombatLooter.Classes.Implementation;
+using CombatLooter.Classes.Implementation.V0.Armor;
 using CombatLooter.Classes.Implementation.V0.Player;
 using CombatLooter.Classes.Implementation.V0.Weapon;
 using CombatLooter.Enum;
@@ -14,14 +15,18 @@ namespace CombatLooter.UnitTests.Armor
             double initialArmorValue = 50.0;
             var armorSlot = ArmorSlots.Chest;
             var armorType = ArmorTypes.Heavy;
+            var resistances = new Dictionary<DamageModifiers, double>();
+            var weight = 15.0;
             int ilevel = 10;
             string name = "Test Chest Armor";
             // Act
-            var armor = new BaseArmor(initialArmorValue, armorSlot, armorType, ilevel, name);
+            var armor = new ArmorItem(initialArmorValue, armorSlot, armorType, resistances, weight, ilevel, name);
             // Assert
             Assert.Equal(initialArmorValue, armor.GetArmorValue());
             Assert.Equal(armorSlot, armor.GetArmorSlot());
             Assert.Equal(armorType, armor.GetArmorTypes());
+            Assert.Equal(resistances, armor.GetResistances());
+            Assert.Equal(weight, armor.GetWeight());
             Assert.Equal(ilevel, armor.GetILevel());
             Assert.Equal(name, armor.GetName());
         }
@@ -31,7 +36,7 @@ namespace CombatLooter.UnitTests.Armor
         {
             // Arrange
             var player = new Player(100, 100, "Player test", 25, 10, 10, 10, 10, new Dictionary<DamageModifiers, double>(), new MeleeWeapon(MeleeWeaponTypes.Axe), 1, BeingClass.Humanoid);
-            var headArmor = new BaseArmor(15.0, ArmorSlots.Head, ArmorTypes.Light, 5, "Test Head Armor");
+            var headArmor = new ArmorItem(15.0, ArmorSlots.Head, ArmorTypes.Light, new Dictionary<DamageModifiers, double>(), 2, 5, "Test Head Armor");
 
             player.Head = headArmor;
 
@@ -40,7 +45,7 @@ namespace CombatLooter.UnitTests.Armor
 
             // Assert
             Assert.NotNull(armorRetrieved);
-            Assert.IsType<BaseArmor>(armorRetrieved);
+            Assert.IsType<ArmorItem>(armorRetrieved);
             Assert.Equal(ArmorSlots.Head, armorRetrieved.GetArmorSlot());
         }
 
@@ -49,8 +54,8 @@ namespace CombatLooter.UnitTests.Armor
         {
             // Arrange
             var player = new Player(100, 100, "Player test", 25, 10, 10, 10, 10, new Dictionary<DamageModifiers, double>(), new MeleeWeapon(MeleeWeaponTypes.Axe), 1, BeingClass.Humanoid);
-            var firstHeadArmor = new BaseArmor(15.0, ArmorSlots.Head, ArmorTypes.Light, 5, "First Head Armor");
-            var secondHeadArmor = new BaseArmor(25.0, ArmorSlots.Head, ArmorTypes.Medium, 8, "Second Head Armor");
+            var firstHeadArmor = new ArmorItem(15.0, ArmorSlots.Head, ArmorTypes.Light, new Dictionary<DamageModifiers, double>(), 2, 5, "First Head Armor");
+            var secondHeadArmor = new ArmorItem(25.0, ArmorSlots.Head, ArmorTypes.Medium, new Dictionary<DamageModifiers, double>(), 3, 8, "Second Head Armor");
             
             // Act
             player.Head = firstHeadArmor;

@@ -479,5 +479,15 @@ namespace CombatLooter.Classes.Implementation
             return damage;
         }
         #endregion
+
+        /// <summary>
+        /// Override ToString method to provide a string representation of the Being
+        /// </summary>
+        /// <returns>A string representing the Being's attributes.</returns>
+        public override string ToString()
+        {
+            var stringResult = $"Name: {this._name}, Class: {this._class}, Level: {this._level}, Health: {this._currentHealth}/{this._maxHealth}, Mana: {this._currentMana}/{this._maxMana}, Armor: {this._armor}, Stamina: {this._stamina}, Strength: {this._strength}, Intelligence: {this._intelligence}, Dexterity: {this._dexterity}";
+            return stringResult;    
+        }
     }
 }

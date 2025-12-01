@@ -251,6 +251,28 @@ namespace CombatLooter.Classes.Implementation
             return result;
         }
         #endregion
+
+        public override string ToString()
+        {
+            var stringDescription = $"| Weapon Name: {GetName()} | Item Level: {GetILevel()}\n" +
+                                    $"| Weapon Type: {GetWeaponType()} | Base Damage: {GetBaseDamage()}\n" +
+                                    $"| Damage Type: {GetDamageType()} | Weight: {GetWeight()}\n" +
+                                    $"| Attack Speed: {GetAttackSpeed()} | DPS: {GetDPS():F2}\n" +
+                                    $"| Damage Modifiers:\n";
+            if(_damageModifiers.Count == 0)
+            {
+                stringDescription += "| None";
+            }
+            else
+            {
+                foreach (var modifier in _damageModifiers)
+                {
+                    stringDescription += $"| -> {modifier.Key}: {modifier.Value}\n";
+                }
+            }
+
+            return stringDescription;
+        }
     }
 
     /// <summary>

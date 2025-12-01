@@ -1,4 +1,5 @@
 ﻿using CombatLooter.Classes.Interface;
+using System.Runtime.CompilerServices;
 
 namespace CombatLooter.Classes.Implementation
 {
@@ -89,6 +90,15 @@ namespace CombatLooter.Classes.Implementation
             }
 
             this._name = newName;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"Item ID: {this._itemId}, Name: {this._name}, Item Level: {this._iLevel}";
         }
     }
 }
