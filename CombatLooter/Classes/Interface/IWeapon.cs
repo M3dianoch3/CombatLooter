@@ -3,7 +3,7 @@ using CombatLooter.Enum;
 
 namespace CombatLooter.Classes.Interface
 {
-    public interface IWeapon
+    public interface IWeapon : IItem
     {
         WeaponTypes GetWeaponType();
         double GetBaseDamage();

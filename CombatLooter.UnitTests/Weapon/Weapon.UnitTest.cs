@@ -1,4 +1,4 @@
-﻿using CombatLooter.Classes.Implementation;
+using CombatLooter.Classes.Implementation;
 using CombatLooter.Enum;
 
 namespace CombatLooter.UnitTests.Weapon

@@ -1,5 +1,4 @@
 ﻿using CombatLooter.Classes.Interface;
-using System.Runtime.CompilerServices;
 
 namespace CombatLooter.Classes.Implementation
 {

@@ -21,11 +21,11 @@ namespace CombatLooter.Enum
     [Flags]
     public enum DamageModifiers
     {
-        Fire = 2,
-        Ice = 4,
-        Lightning = 8,
-        Poison = 16,
-        True = 32,
-        Shadow = 64,
+        Fire = 0,
+        Ice = 2,
+        Lightning = 4,
+        Poison = 8,
+        True = 16,
+        Shadow = 32,
     }
 }

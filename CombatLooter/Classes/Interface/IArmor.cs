@@ -2,7 +2,7 @@
 
 namespace CombatLooter.Classes.Interface
 {
-    public interface IArmor
+    public interface IArmor : IItem
     {
         /// <summary>
         /// Retrieves the armor type associated with the current instance.

@@ -1,18 +1,19 @@
 ﻿using CombatLooter.Classes.Implementation;
 using CombatLooter.Classes.Implementation.V0.Player;
+using CombatLooter.Constants;
 using CombatLooter.Enum;
-using CombatLooter.Services.Interface;
+using CombatLooter.Events.Implementation;
+using CombatLooter.Services.Combat.Interface;
 using CombatLooter.Services.Models;
 using Microsoft.Extensions.Logging;
 
-namespace CombatLooter.Services.Implementation
+namespace CombatLooter.Services.Combat.Implementation
 {
-    public class Combat : ICombat
+    public class CombatService : ICombatService
     {
         private List<BaseBeing> _enemies;
         private Player _player;
         private readonly Random _rng = new();
-        private const double attackSpeedWithNoWeapon = 1.0;
 
         private readonly ILogger _logger;
 
@@ -22,7 +23,7 @@ namespace CombatLooter.Services.Implementation
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public Combat(Player player, ILogger logger)
+        public CombatService(Player player, ILogger logger)
         {
             _player = player;
             _enemies = new List<BaseBeing>();
@@ -34,7 +35,7 @@ namespace CombatLooter.Services.Implementation
         /// </summary>
         /// <param name="player"></param>
         /// <param name="enemies"></param>
-        public Combat(Player player, List<BaseBeing> enemies, ILogger logger)
+        public CombatService(Player player, List<BaseBeing> enemies, ILogger logger)
         {
             _player = player;
             _enemies = enemies;
@@ -49,8 +50,9 @@ namespace CombatLooter.Services.Implementation
         /// - Subsequent actions: scheduled by weapon attack speed (fast weapons attack more often).
         /// Returns true if player survives, false if player dies.
         /// Optional logger receives plain-text events for debugging/observability.
+        /// Event handler onDamage is invoked on each damage event.
         /// </summary>
-        public bool RunCombat(Action<string>? logger = null)
+        public bool RunCombat(Action<string>? logger = null, EventHandler<DamageEventArgs> onDamage = null)
         {
             logger?.Invoke("Combat started.");
 
@@ -69,7 +71,7 @@ namespace CombatLooter.Services.Implementation
                 var alive = _enemies.Where(IsAlive).ToList();
                 if (!alive.Any()) return null;
                 var minHp = alive.Min(e => e.GetCurrentHealth());
-                var candidates = alive.Where(e => Math.Abs(e.GetCurrentHealth() - minHp) < 0.0001).ToList();
+                var candidates = alive.Where(e => Math.Abs(e.GetCurrentHealth() - minHp) < GameBalanceConstants.HealthComparisonDelta).ToList();
                 return candidates.Count == 1 ? candidates[0] : candidates[_rng.Next(candidates.Count)];
             }
 
@@ -77,7 +79,7 @@ namespace CombatLooter.Services.Implementation
             static double GetAttackSpeed(BaseBeing b)
             {
                 var weapon = b.GetEquippedWeapon();
-                return weapon?.GetAttackSpeed() ?? attackSpeedWithNoWeapon;
+                return weapon?.GetAttackSpeed() ?? GameBalanceConstants.attackSpeedWithNoWeapon;
             }
 
             // ---------- First round: dexterity order ----------
@@ -109,6 +111,19 @@ namespace CombatLooter.Services.Implementation
                 var damage = attacker.GetAmountAttack();
                 logger?.Invoke($"{attacker.GetName()} attacks {target.GetName()} for {damage} damage.");
                 var dead = target.TakeDamage(damage, new Dictionary<DamageModifiers, double>());
+
+                //Damage event
+                onDamage?.Invoke(this, new DamageEventArgs
+                {
+                    AttackerName = attacker.Name,
+                    TargetName = target.Name,
+                    DamageAmount = damage,
+                    IsPlayerTarget = target == _player,
+                    MaxHealth = target.MaxHealth,
+                    RemainingHealth = target.CurrentHealth,
+                    TargetDied = dead
+                });
+
                 if (dead)
                 {
                     logger?.Invoke($"{target.GetName()} died.");
@@ -148,14 +163,12 @@ namespace CombatLooter.Services.Implementation
                 pq.Enqueue(p, speed);
             }
 
-            // Safety guard to avoid infinite loops (shouldn't happen but protects faulty configs)
-            const int maxActions = 10000;
             int actions = 0;
 
             while (IsAlive(_player) && _enemies.Any(IsAlive))
             {
                 turnNumber++;
-                if (actions++ > maxActions)
+                if (actions++ > GameBalanceConstants.MaxCombatActions)
                 {
                     logger?.Invoke("Max action limit reached, aborting combat.");
                     break;
@@ -170,6 +183,12 @@ namespace CombatLooter.Services.Implementation
                 }
 
                 // Dequeue next attacker (earliest next attack time)
+                // ISSUE/CONCERN:
+                // Here there is a "problem", if any entity (A) has a very slow weapon, other entities that might have
+                // lower attack speed could attack few times before that entity (A) gets its turn again.
+                // Is this what I want?
+                // I think this should be fixed to turn based strategy, where each entity gets its turn in a round-robin fashion
+                // So for each combat turn, every entity should have 1 and only 1 chance to attack
                 pq.TryDequeue(out var attacker, out var nextTime);
 
                 if(attacker is null)
@@ -237,27 +256,6 @@ namespace CombatLooter.Services.Implementation
             Intelligence,
             Stamina,
             WeaponSpeed
-        }
-
-        // Helper to test alive
-        static bool IsAlive(BaseBeing b) => b.GetCurrentHealth() > 0;
-
-        private BaseBeing? PickPlayerTarget()
-        {
-            var alive = _enemies.Where(IsAlive).ToList();
-            if (!alive.Any()) return null;
-            var minHp = alive.Min(e => e.GetCurrentHealth());
-            var candidates = alive.Where(e => Math.Abs(e.GetCurrentHealth() - minHp) < 0.0001).ToList();
-            return candidates.Count == 1 ? candidates[0] : candidates[_rng.Next(candidates.Count)];
-        }
-
-        private List<BaseBeing> OrderEntities(List<BaseBeing> entities, OrderMethod method)
-        {
-            switch (method)
-            {
-                case OrderMethod.Dexterity: throw new NotImplementedException();
-                default: throw new NotImplementedException();
-            }
         }
         #endregion
     }

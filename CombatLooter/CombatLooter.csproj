@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="Classes\Implementation\V1\" />
+    <Folder Include="Services\Game\Interface\" />
   </ItemGroup>
 
   <ItemGroup>

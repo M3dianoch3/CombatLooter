@@ -1,9 +1,10 @@
 ﻿using CombatLooter.Classes.Implementation.V0.Armor;
 using CombatLooter.Classes.Implementation.V0.Weapon;
-using CombatLooter.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+
+namespace CombatLooter;
 
 class Program
 {
@@ -16,7 +17,7 @@ class Program
             .Enrich.FromLogContext()
             .CreateLogger();
         var app = new Application(
-            new LoggerFactory().CreateLogger<Application>(),
+            new LoggerFactory().AddSerilog().CreateLogger<Application>(),
             new ServiceCollection().BuildServiceProvider()
         );
         app.Run(args);

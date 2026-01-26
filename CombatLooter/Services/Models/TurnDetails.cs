@@ -8,7 +8,7 @@
         private readonly List<BeingTurnDetails> _beingTurnDetails;
 
         /// <summary>
-        /// 
+        /// Constructor for TurnDetails class.
         /// </summary>
         public TurnDetails()
         {
@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        /// 
+        /// Gets the list of being turn details.
         /// </summary>
         /// <returns></returns>
         public List<BeingTurnDetails> GetBeingTurnDetails()
@@ -25,23 +25,23 @@
         }
 
         /// <summary>
-        /// 
+        /// Gets the number of attacks recorded in this turn.
         /// </summary>
         /// <returns></returns>
         public int GetNumberOfAttacks()
         {
             return _beingTurnDetails.Count;
         }
-        
+
         /// <summary>
-        /// 
+        /// Adds a new action to the turn details.
         /// </summary>
-        /// <param name="turnNumber"></param>
-        /// <param name="attackerName"></param>
-        /// <param name="action"></param>
-        /// <param name="amountOfAction"></param>
-        /// <param name="targetName"></param>
-        /// <param name="targetStatus"></param>
+        /// <param name="turnNumber">A unique identifier for the turn.</param>
+        /// <param name="attackerName">The name of the attacker.</param>
+        /// <param name="action">The action performed.</param>
+        /// <param name="amountOfAction">The amount of action performed.</param>
+        /// <param name="targetName">The name of the target.</param>
+        /// <param name="targetStatus">The status of the target after the action.</param>
         public void AddNewAction(int turnNumber, string attackerName, string action, double amountOfAction, string targetName, string targetStatus)
         {
             _beingTurnDetails.Add(new BeingTurnDetails()

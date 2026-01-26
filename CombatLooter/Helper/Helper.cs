@@ -2,13 +2,17 @@
 using CombatLooter.Classes.Implementation.V0.Armor;
 using CombatLooter.Classes.Implementation.V0.Player;
 using CombatLooter.Classes.Implementation.V0.Weapon;
+using CombatLooter.Constants;
 using CombatLooter.Enum;
 using CombatLooter.Extensions;
+using CombatLooter.Services.NameGeneratorService.Implementation;
 
 namespace CombatLooter.Helper
 {
     public static class Helper
     {
+        private static NameGeneratorService _nameGeneratorService = new NameGeneratorService();
+
         #region Armor Helpers
 
         private static readonly Dictionary<ArmorSlots, double> _armorValueDefaultPerSlot = new Dictionary<ArmorSlots, double>
@@ -59,6 +63,8 @@ namespace CombatLooter.Helper
 
         private static readonly int NumberOfEnemiesPerRound = 3;
 
+        // TO BE REFACTORED. It should not use Console.Write/WriteLine directly, this is not good for testing or future UI changes
+        // This may be moved to a UI Helper class in the future (Or Game class)
         public static void ChoosePhaseAfterCombat(Player player, List<BaseItem> itemsToChoose)
         {
             // Placeholder for future implementation
@@ -108,7 +114,7 @@ namespace CombatLooter.Helper
 
         private static BaseBeing CreateEnemyRandomForLevel(int level)
         {
-            int random = Random.Shared.Next(0, 8);
+            int random = Random.Shared.Next(0, GameBalanceConstants.MaxEnemyTypes);
 
             switch (random)
             {
@@ -148,29 +154,29 @@ namespace CombatLooter.Helper
             _weaponType = (WeaponTypes)Random.Shared.Next(0, 2);
 
             // Second, set weapon damage type (Physical, Magical, etc.)
-            _damageType = (DamageTypes)Random.Shared.Next(0, System.Enum.GetValues<DamageTypes>().Length);
+            _damageType = GetRandomEnumValue<DamageTypes>();
 
             // Third, select type of weapon based on weapon type chosen
-            MeleeWeaponTypes _meleeWeaponType = (MeleeWeaponTypes)Random.Shared.Next(System.Enum.GetValues<MeleeWeaponTypes>().Length);
-            RangedWeaponTypes _rangedWeaponType = (RangedWeaponTypes)Random.Shared.Next(System.Enum.GetValues<RangedWeaponTypes>().Length);
+            MeleeWeaponTypes _meleeWeaponType = GetRandomEnumValue<MeleeWeaponTypes>();
+            RangedWeaponTypes _rangedWeaponType = GetRandomEnumValue<RangedWeaponTypes>();
 
             // Fourth, set weapon damage modifiers based on level
 
             Dictionary<DamageModifiers, double> damageModifiers = new Dictionary<DamageModifiers, double>();
-            if (1 < level && level < 5) //level 2-4
+            if (GameBalanceConstants.Tier1MinLevel < level && level <= GameBalanceConstants.Tier1MaxLevel)
             {
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(1, 6));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier1MinDamage, GameBalanceConstants.Tier1MaxDamage));
             }
-            else if (5 <= level && level < 10) //level 5-9
+            else if (GameBalanceConstants.Tier2MinLevel <= level && level < GameBalanceConstants.Tier2MaxLevel)
             {
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(5, 11));
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(5, 11));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier2MinDamage, GameBalanceConstants.Tier2MaxDamage));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier2MinDamage, GameBalanceConstants.Tier2MaxDamage));
             }
-            else if (10 <= level) //level 10+
+            else if (GameBalanceConstants.Tier3MinLevel <= level)
             {
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
-                damageModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
+                damageModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
             }
 
             //Fifth , set base damage and attack speed based on weapon type and level
@@ -192,9 +198,13 @@ namespace CombatLooter.Helper
             switch (_weaponType)
             {
                 case WeaponTypes.Melee:
-                    return new MeleeWeapon(_weaponType, _baseDamage, _damageType, _attackSpeed, _weight, damageModifiers, level, $"Level {level} {_meleeWeaponType}", _meleeWeaponType);
+                    var newWeapon = new MeleeWeapon(_weaponType, _baseDamage, _damageType, _attackSpeed, _weight, damageModifiers, level, $"Level {level} {_meleeWeaponType}", _meleeWeaponType);
+                    newWeapon.SetName(_nameGeneratorService.GenerateName(newWeapon));
+                    return newWeapon;
                 case WeaponTypes.Ranged:
-                    return new RangedWeapon(_weaponType, _baseDamage, _damageType, _attackSpeed, _weight, damageModifiers, level, $"Level {level} {_rangedWeaponType}", _rangedWeaponType);
+                    var newRangedWeapon = new RangedWeapon(_weaponType, _baseDamage, _damageType, _attackSpeed, _weight, damageModifiers, level, $"Level {level} {_rangedWeaponType}", _rangedWeaponType);
+                    newRangedWeapon.SetName(_nameGeneratorService.GenerateName(newRangedWeapon));
+                    return newRangedWeapon;
                 default:
                     return new MeleeWeapon(_weaponType, _baseDamage, _damageType, _attackSpeed, _weight, damageModifiers, level, $"Level {level} {_meleeWeaponType}", _meleeWeaponType);
             }
@@ -202,33 +212,43 @@ namespace CombatLooter.Helper
 
         private static BaseArmor CreateArmorRandomForLevel(int level)
         {
-            ArmorSlots _armorSlot = (ArmorSlots)Random.Shared.Next(0, System.Enum.GetValues<ArmorSlots>().Length);
-            ArmorTypes _armorType = (ArmorTypes)Random.Shared.Next(0, System.Enum.GetValues<ArmorTypes>().Length);
+            ArmorSlots _armorSlot = GetRandomEnumValue<ArmorSlots>();
+            ArmorTypes _armorType = GetRandomEnumValue<ArmorTypes>();
 
             Dictionary<ArmorSlots, double> _armorValuesDefault = GetDefaultArmorValues();
             Dictionary<ArmorSlots, double> _armorWeightsDefault = GetDefaultArmorWeights();
             Dictionary<ArmorTypes, double> _armorMultipliers = GetArmorTypeMultipliers();
 
             Dictionary<DamageModifiers, double> resistanceModifiers = new Dictionary<DamageModifiers, double>();
-            if (2 < level && level < 6) //level 3-6
+            if (GameBalanceConstants.Tier1MinLevel < level && level <= GameBalanceConstants.Tier1MaxLevel)
             {
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(1, 6));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier1MinDamage, GameBalanceConstants.Tier1MaxDamage));
             }
-            else if (6 <= level && level < 10) //level 6-9
+            else if (GameBalanceConstants.Tier2MinLevel <= level && level < GameBalanceConstants.Tier2MaxLevel)
             {
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(5, 11));
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(5, 11));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier2MinDamage, GameBalanceConstants.Tier2MaxDamage));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier2MinDamage, GameBalanceConstants.Tier2MaxDamage));
             }
-            else if (10 <= level) //level 10+
+            else if (GameBalanceConstants.Tier3MinLevel <= level)
             {
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
-                resistanceModifiers.AddOrSum((DamageModifiers)Random.Shared.Next(0, System.Enum.GetValues<DamageModifiers>().Length), Random.Shared.Next(8, 20));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
+                resistanceModifiers.AddOrSum(GetRandomEnumValue<DamageModifiers>(), Random.Shared.Next(GameBalanceConstants.Tier3MinDamage, GameBalanceConstants.Tier3MaxDamage));
             }
 
-            return new ArmorItem(_armorValuesDefault[_armorSlot] * _armorMultipliers[_armorType], _armorSlot, _armorType, resistanceModifiers, _armorWeightsDefault[_armorSlot] * _armorMultipliers[_armorType], level, $"{_armorType} {_armorSlot} ({level})");
+            var newArmor = new ArmorItem(_armorValuesDefault[_armorSlot] * _armorMultipliers[_armorType], _armorSlot, _armorType, resistanceModifiers, _armorWeightsDefault[_armorSlot] * _armorMultipliers[_armorType], level, $"{_armorType} {_armorSlot} ({level})");
+            newArmor.SetName(_nameGeneratorService.GenerateName(newArmor));
+            return newArmor;
         }
 
+        #endregion
+
+        #region Random Helpers
+        private static T GetRandomEnumValue<T>() where T : System.Enum
+        {
+            var values = System.Enum.GetValues(typeof(T));
+            return (T)values.GetValue(Random.Shared.Next(values.Length))!;
+        }
         #endregion
     }
 }
