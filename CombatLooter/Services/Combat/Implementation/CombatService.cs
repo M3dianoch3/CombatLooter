@@ -52,7 +52,7 @@ namespace CombatLooter.Services.Combat.Implementation
         /// Optional logger receives plain-text events for debugging/observability.
         /// Event handler onDamage is invoked on each damage event.
         /// </summary>
-        public bool RunCombat(Action<string>? logger = null, EventHandler<DamageEventArgs> onDamage = null)
+        public bool RunCombat(Action<string>? logger, EventHandler<DamageEventArgs> onDamage)
         {
             logger?.Invoke("Combat started.");
 
@@ -60,25 +60,25 @@ namespace CombatLooter.Services.Combat.Implementation
             var turnNumber = 1;
             
             // Defensive copy of active enemies
-            _enemies = _enemies.Where(e => e.GetCurrentHealth() > 0).ToList();
+            _enemies = _enemies.Where(e => e.CurrentHealth > 0).ToList();
 
             // Helper to test alive
-            static bool IsAlive(BaseBeing b) => b.GetCurrentHealth() > 0;
+            static bool IsAlive(BaseBeing b) => b.CurrentHealth > 0;
 
             // Helper to pick player's target: enemy with the lowest health, random tie-break
             BaseBeing? PickPlayerTarget()
             {
                 var alive = _enemies.Where(IsAlive).ToList();
                 if (!alive.Any()) return null;
-                var minHp = alive.Min(e => e.GetCurrentHealth());
-                var candidates = alive.Where(e => Math.Abs(e.GetCurrentHealth() - minHp) < GameBalanceConstants.HealthComparisonDelta).ToList();
+                var minHp = alive.Min(e => e.CurrentHealth);
+                var candidates = alive.Where(e => Math.Abs(e.CurrentHealth - minHp) < GameBalanceConstants.HealthComparisonDelta).ToList();
                 return candidates.Count == 1 ? candidates[0] : candidates[_rng.Next(candidates.Count)];
             }
 
             // Helper to get attack speed (default attackSpeedWithNoWeapon if no weapon)
             static double GetAttackSpeed(BaseBeing b)
             {
-                var weapon = b.GetEquippedWeapon();
+                var weapon = b.EquippedWeapon;
                 return weapon?.GetAttackSpeed() ?? GameBalanceConstants.attackSpeedWithNoWeapon;
             }
 
@@ -88,7 +88,7 @@ namespace CombatLooter.Services.Combat.Implementation
             participants.AddRange(_enemies);
             // Sort descending by dexterity; stable tie-break random
             participants = participants
-                .OrderByDescending(b => b.GetDexterity())
+                .OrderByDescending(b => b.Dexterity)
                 .ThenBy(_ => Guid.NewGuid()) // randomize equal dex
                 .ToList();
 
@@ -109,7 +109,7 @@ namespace CombatLooter.Services.Combat.Implementation
 
                 // Attack
                 var damage = attacker.GetAmountAttack();
-                logger?.Invoke($"{attacker.GetName()} attacks {target.GetName()} for {damage} damage.");
+                logger?.Invoke($"{attacker.Name} attacks {target.Name} for {damage} damage.");
                 var dead = target.TakeDamage(damage, new Dictionary<DamageModifiers, double>());
 
                 //Damage event
@@ -126,12 +126,12 @@ namespace CombatLooter.Services.Combat.Implementation
 
                 if (dead)
                 {
-                    logger?.Invoke($"{target.GetName()} died.");
+                    logger?.Invoke($"{target.Name} died.");
                     if (target == _player) return false;
                     // remove dead enemy from active list
                     _enemies.Remove(target);
                 }
-                actionTurnDetails.AddNewAction(turnNumber, attacker.GetName(), "Attack", damage, target.GetName(), dead ? "Dead":"Alive");
+                actionTurnDetails.AddNewAction(turnNumber, attacker.Name, "Attack", damage, target.Name, dead ? "Dead":"Alive");
             }
 
             // Adding all action logs to _turnsDetails
@@ -210,16 +210,16 @@ namespace CombatLooter.Services.Combat.Implementation
 
                 // Attack
                 var damage = attacker.GetAmountAttack();
-                logger?.Invoke($"[t={nextTime:0.00}] {attacker.GetName()} attacks {target.GetName()} for {damage} damage.");
+                logger?.Invoke($"[t={nextTime:0.00}] {attacker.Name} attacks {target.Name} for {damage} damage.");
                 var dead = target.TakeDamage(damage, new Dictionary<DamageModifiers, double>());
                 if (dead)
                 {
-                    logger?.Invoke($"{target.GetName()} died.");
+                    logger?.Invoke($"{target.Name} died.");
                     if (target == _player) return false;
                     _enemies.Remove(target);
                 }
 
-                actionTurnDetails.AddNewAction(turnNumber, attacker.GetName(), "Attack", damage, target.GetName(), dead ? "Dead":"Alive");
+                actionTurnDetails.AddNewAction(turnNumber, attacker.Name, "Attack", damage, target.Name, dead ? "Dead":"Alive");
                 
                 // Re-enqueue attacker with its next scheduled time
                 double attackSpeed = GetAttackSpeed(attacker);

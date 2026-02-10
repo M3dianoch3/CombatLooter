@@ -84,6 +84,14 @@ namespace CombatLooter.Services.Game.Implementation
 
                 if (!playerAlive) break;
 
+                // After combat, if the player is still alive, create loot (based on enemies?) and let the player choose equipment
+                // Prepare list of items to choose from
+                var lootAfterCombat = Helper.Helper.GetItemsForLevel(player.Level);
+                OnLootAvailable?.Invoke(this, new LootAvailableEventArgs
+                {
+                    AvailableItems = lootAfterCombat
+                });
+
                 // Track stats before level up
                 int oldStr = player.Strength;
                 int oldDex = player.Dexterity;
@@ -100,11 +108,13 @@ namespace CombatLooter.Services.Game.Implementation
                     DexterityGained = player.Dexterity - oldDex,
                     IntelligenceGained = player.Intelligence - oldInt
                 });
-
-                // After combat, if the player is still alive, create loot (based on enemies?) and let the player choose equipment
-
-
             }
+
+            OnCombatEnded?.Invoke(this, new CombatEndedEventArgs
+            {
+                PlayerVictory = false,
+                TurnsTaken = combatNumber
+            });
             _logger.LogInformation("Game over. The player has died.");
         }
 

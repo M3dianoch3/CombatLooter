@@ -136,12 +136,14 @@ All enemies inherit from `BaseBeing` and have these core stats:
 #### 1. **Goblin** 🗡️
 *Common at low levels (1-5), rare at high levels*
 
-| Variant | Health (Lv1) | Mana | Armor | STR | INT | DEX | Weapon | Special |
-|---------|--------------|------|-------|-----|-----|-----|--------|---------|
-| **Goblin** | 50 + (12×Lv) | 10 + (3×Lv) | 3 + (1.5×Lv) | 8+Lv | 4 | 12+Lv | None | - |
+| Variant | Health (Lv1) | Mana | Armor | STR | INT | DEX | Weapon | Notes |
+|---------|--------------|------|-------|-----|-----|-----|--------|-------|
+| **Goblin Warrior** | 50 + (10×Lv) | 20 + (5×Lv) | 5 + (2×Lv) | 8+Lv | 5+(Lv/2) | 12+Lv | Rusty Dagger (1.1s) | Melee fighter |
+| **Goblin Skirmisher** | 40 + (8×Lv) | 25 + (6×Lv) | 3 + (1.5×Lv) | 6+Lv | 7+(Lv/2) | 15+Lv | Short Bow (1.3s) | Ranged, very fast |
+| **Goblin Shaman** | 35 + (7×Lv) | 40 + (10×Lv) | 2 + (1×Lv) | 4+Lv | 12+Lv | 10+Lv | Shaman's Staff (1.2s) | Magic damage |
 
 **Class:** `BeingClass.Goblin`  
-**Resistances:** None
+**Resistances:** Poison (5% + 0.5%×Lv)
 
 ---
 
@@ -256,7 +258,9 @@ All enemies inherit from `BaseBeing` and have these core stats:
    - Example: 1.0 speed = 1 attack/second, 2.5 speed = 1 attack/2.5 seconds
 
 ### Damage Calculation
-Base Attack = Weapon BaseDamage + Stat Scaling Total Damage = Base Attack + Σ(Elemental Modifiers after Resistances) Final Health = Current Health - Total Damage
+Base Attack = Weapon BaseDamage + Stat Scaling 
+Total Damage = Base Attack + Σ(Elemental Modifiers after Resistances) 
+Final Health = Current Health - Total Damage
 
 
 ### Targeting

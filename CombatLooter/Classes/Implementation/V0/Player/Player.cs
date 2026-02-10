@@ -1,4 +1,5 @@
 ﻿using CombatLooter.Classes.Implementation.V0.Weapon;
+using CombatLooter.Constants;
 using CombatLooter.Enum;
 
 namespace CombatLooter.Classes.Implementation.V0.Player
@@ -97,34 +98,34 @@ namespace CombatLooter.Classes.Implementation.V0.Player
             switch (this.EquippedWeapon?.GetWeaponType())
             {   
                 case WeaponTypes.Melee:
-                    this.Strength += 5;
-                    this.Dexterity += 2;
-                    this.Intelligence += 2;
+                    this.Strength += GameBalanceConstants.mainAttributeIncrease;
+                    this.Dexterity += GameBalanceConstants.secondaryAttributeIncrease;
+                    this.Intelligence += GameBalanceConstants.secondaryAttributeIncrease;
                     break;
                 case WeaponTypes.Ranged:
                     if (this.EquippedWeapon is RangedWeapon rangedWeapon && rangedWeapon.RangedWeaponType == RangedWeaponTypes.Wand)
                     {
-                        this.Intelligence += 5;
-                        this.Dexterity += 2;
-                        this.Strength += 2;
+                        this.Intelligence += GameBalanceConstants.mainAttributeIncrease;
+                        this.Dexterity += GameBalanceConstants.secondaryAttributeIncrease;
+                        this.Strength += GameBalanceConstants.secondaryAttributeIncrease;
                     }
                     else
                     {
-                        this.Dexterity += 5;
-                        this.Strength += 2;
-                        this.Intelligence += 2;
+                        this.Dexterity += GameBalanceConstants.mainAttributeIncrease;
+                        this.Strength += GameBalanceConstants.secondaryAttributeIncrease;
+                        this.Intelligence += GameBalanceConstants.secondaryAttributeIncrease;
                     }
                     break;
                 default:
                     // Default stat increase if no weapon is equipped
-                    this.Strength += 2;
-                    this.Dexterity += 2;
-                    this.Intelligence += 2;
+                    this.Strength += GameBalanceConstants.secondaryAttributeIncrease;
+                    this.Dexterity += GameBalanceConstants.secondaryAttributeIncrease;
+                    this.Intelligence += GameBalanceConstants.secondaryAttributeIncrease;
                     break;
             }
 
-            this.MaxHealth += 20;
-            this.MaxMana += 20;
+            this.MaxHealth += GameBalanceConstants.healthIncreasePerLevel;
+            this.MaxMana += GameBalanceConstants.manaIncreasePerLevel;
 
             // Restore health and mana to full upon leveling up
             this.CurrentHealth = this.MaxHealth;

@@ -51,7 +51,7 @@
 
     public class LootAvailableEventArgs : GameEventArgs
     {
-        public IReadOnlyList<string> AvailableItems { get; init; } = [];
+        public IReadOnlyList<object> AvailableItems { get; init; } = [];
     }
 
     public class LogMessageEventArgs : GameEventArgs

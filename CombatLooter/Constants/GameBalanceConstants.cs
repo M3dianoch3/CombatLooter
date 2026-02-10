@@ -45,5 +45,15 @@ namespace CombatLooter.Constants
         public const double HealthComparisonDelta = 0.0001;
 
         #endregion
+
+        #region Player progression
+
+        public const int mainAttributeIncrease = 5;
+        public const int secondaryAttributeIncrease = 2;
+
+        public const int healthIncreasePerLevel = 20;
+        public const int manaIncreasePerLevel = 20;
+
+        #endregion
     }
 }
